@@ -26,14 +26,30 @@ def add_csv():
     with open('inventory.csv') as file:
         data = csv.reader(file)
         for row in data:
-            print(row)
-            # product_quantity =
-            # product_price
-            # date_updated
+            product_in_db = session.query(Product).filter(Product.product_name == row[0]).one_or_none()
+            if product_in_db:
+                product_name = row[0]
+                product_price = clean_price(row[1])
+                product_quantity = clean_quantity(row[2])
+                date_updated = clean_date(row[3])
+                new_product = Product(product_name=product_name, product_quantity=product_quantity,
+                                      product_price=product_price, date_updated=date_updated)
+                session.add(new_product)
+        session.commit()
 
 
 def clean_quantity(quantity_str):
-    pass
+    try:
+        product_quantity = int(quantity_str)
+    except ValueError:
+        input('''
+                                  \n****** Value ERROR ******
+                                  \rThe product quantity should be a number.
+                                  \rPress enter to try again.
+                                  \r*************************''')
+        return
+    else:
+        return product_quantity
 
 
 def clean_price(price_str):
@@ -52,8 +68,10 @@ def clean_price(price_str):
 
 
 def clean_date(date_str):
-    pass
+    date_split = date_str.split('/')
+    return datetime.datetime(int(date_split[2]), int(date_split[1]), int(date_split[0]))
+
 
 
 if __name__ == '__main__':
-    add_csv()
+    # add_csv()
