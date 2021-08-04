@@ -10,6 +10,7 @@ Base = declarative_base()
 
 
 class Product(Base):
+    """Creating Product Table"""
     __tablename__ = 'products'
 
     product_id = Column(Integer, primary_key=True)
