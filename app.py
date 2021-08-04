@@ -37,6 +37,15 @@ def add_csv():
                 new_product = Product(product_name=product_name, product_quantity=product_quantity,
                                       product_price=product_price, date_updated=date_updated)
                 session.add(new_product)
+            else:
+                date_updated = clean_date(row[3])
+                # if the duplicate product date is 'newer', update product info
+                if product_in_db.date_updated > date_updated.date():
+                    continue
+                else:
+                    product_in_db.product_price = clean_price(row[1], added_by_user=False)
+                    product_in_db.product_quantity = clean_quantity(row[2])
+                    product_in_db.date_updated = date_updated
         session.commit()
 
 
